@@ -15,7 +15,7 @@
   <!-- The display name of your add-in. Used on the store and various places of the Office UI such as the add-ins dialog. -->
   <DisplayName DefaultValue="EZappt" />
   <Description DefaultValue="EZappt" />
-  <IconUrl DefaultValue="https://amiraelmahdaly.github.io/ezappt/Images/icon64.png" />
+  <IconUrl DefaultValue="https://amiraelmahdaly1.github.io/Ezappt/Images/icon64.png" />
 
   <SupportUrl DefaultValue="http://www.contoso.com" />
   <!-- Domains that will be allowed when navigating. For example, if you use ShowTaskpane and then have an href link, navigation will only be allowed if the domain is on this list. -->
@@ -37,7 +37,7 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://amiraelmahdaly.github.io/ezappt/Index.html" />
+        <SourceLocation DefaultValue="https://amiraelmahdaly1.github.io/Ezappt/Index.html" />
         <RequestedHeight>250</RequestedHeight>
       </DesktopSettings>
     </Form>
@@ -97,13 +97,13 @@
 
     <Resources>
       <bt:Images>
-        <bt:Image id="icon16" DefaultValue="https://amiraelmahdaly.github.io/ezappt/Images/icon16.png" />
-        <bt:Image id="icon32" DefaultValue="https://amiraelmahdaly.github.io/ezappt/Images/icon32.png" />
-        <bt:Image id="icon80" DefaultValue="https://amiraelmahdaly.github.io/ezappt/Images/icon80.png" />
+        <bt:Image id="icon16" DefaultValue="https://amiraelmahdaly1.github.io/Ezappt/Images/icon16.png" />
+        <bt:Image id="icon32" DefaultValue="https://amiraelmahdaly1.github.io/Ezappt/Images/icon32.png" />
+        <bt:Image id="icon80" DefaultValue="https://amiraelmahdaly1.github.io/Ezappt/Images/icon80.png" />
       </bt:Images>
       <bt:Urls>
-        <bt:Url id="functionFile" DefaultValue="https://amiraelmahdaly.github.io/ezappt/Functions/FunctionFile.html" />
-        <bt:Url id="messageReadTaskPaneUrl" DefaultValue="https://amiraelmahdaly.github.io/ezappt/Index.html" />
+        <bt:Url id="functionFile" DefaultValue="https://amiraelmahdaly1.github.io/Ezappt/Functions/FunctionFile.html" />
+        <bt:Url id="messageReadTaskPaneUrl" DefaultValue="https://amiraelmahdaly1.github.io/Ezappt/Index.html" />
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="groupLabel" DefaultValue="EZappt" />
