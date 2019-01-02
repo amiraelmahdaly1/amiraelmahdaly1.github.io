@@ -21,14 +21,16 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
             $('input[name="datetimes"]').daterangepicker({           
                 locale: {
                     format: 'MM-DD-YYYY'
-                }
+                },
+                autoUpdateInput: false
             }, function (start, end) {
                 $scope.avTime.startDt = start.format('MM-DD-YYYY');
                 $scope.avTime.endDt = end.format('MM-DD-YYYY');
+                $('#datetimes').val(start.format('MM-DD-YYYY') + "-" + end.format('MM-DD-YYYY'));
                 //console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
             });
         });
-
+        //$('#datetimes').val('');
         AngularServices.GET("GetAllStaffLocations", staffID).then(function (data) {
             $scope.locations = data.GetAllStaffLocationsResult;
         });
@@ -38,43 +40,20 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
         });
         $("#btnClear").click(function () {
             $scope.timeArr = [];
-            $scope.avTime = {
-                'days': [],
-                'location': '',
-                'startDt': '',
-                'endDt': '',
-                'startTime': '',
-                'endTime': '',
-                'locID': ''
-            };
-            $('#datetimes').val('');
-            $(".checkbox1").prop("checked", false);
-
+     
             $scope.$apply();
         });
         $("#btnAdd").click(function () {
             $scope.avTime.locID = Number($("#locations").find(":selected").attr("id"));
-            $('#datetimes').val('');
-            $scope.timeArr.push($scope.avTime);
-            $scope.avTime = {
-                'days': [],
-                'location': '',
-                'startDt': '',
-                'endDt': '',
-                'startTime': '',
-                'endTime': '',
-                'locID':''
-            };
-            $(".checkbox1").prop("checked", false);
+            var avTime = JSON.parse(JSON.stringify($scope.avTime));
 
+            $scope.timeArr.push(avTime);
             $scope.$apply();
         });
 
 
     });
-    function addAvTimes() {
-       
-    }
+
     $scope.removeTime = function (ind) {
         $scope.timeArr.splice(ind, 1);
     }

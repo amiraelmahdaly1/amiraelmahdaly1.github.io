@@ -33,7 +33,9 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
     $scope.ezapptEvents = [];
     Office.initialize = function (reason) {
         $(document).ready(function () {
-
+            var element = document.querySelector('.ms-MessageBanner');
+            messageBanner = new fabric.MessageBanner(element);
+            messageBanner.hideBanner();
             getAllAppts();
             loadRestDetails();
             // Hook Controls with events and configure controls.
@@ -74,6 +76,7 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
 
             } else {
                 rawToken = 'error';
+                loadRestDetails();
             }
         });
     }
@@ -81,6 +84,7 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
         for (var i = 0; i < Calendars.length; i++) {
             if (Calendars[i].Name.trim() === "EzapptNew") {
                 CalendarID = Calendars[i].Id;
+                sessionStorage.setItem('calendarID', CalendarID);
                 return true;
             }
         }
@@ -106,42 +110,67 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
 
     }
     function checkForEzappt() {
-        $.ajax({
-            url: restUrl + 'calendars',
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                'Authorization': 'Bearer ' + rawToken
-            }
-        }).done(function (item) {
-            if (CalendarExists(item.value)) {
-                $scope.newlyCreated = false;
-                if ($scope.key === 'avTimes') {
-                    for (i = 0; i < $scope.avTimes.length; i++) {
-                        var events = getEvents(new Date($scope.avTimes[i].startDt), new Date($scope.avTimes[i].endDt), Number($scope.avTimes[i].startTime.replace(':30', '.5').replace(':00', '')), Number($scope.avTimes[i].endTime.replace(':30', '.5').replace(':00', '')), $scope.avTimes[i].days)
-                        $scope.ezapptEvents = $scope.ezapptEvents.concat(events);
-
-                    }
-                    var k = 0;
-                    if ($scope.ezapptEvents.length != 0)
-                        getAndDeleteEvents(new Date(new Date(new Date(JSON.parse($scope.ezapptEvents[k]).Start.DateTime)).setMinutes(new Date(JSON.parse($scope.ezapptEvents[k]).Start.DateTime).getMinutes() + 5)).toISOString(), new Date(new Date(new Date(JSON.parse($scope.ezapptEvents[k]).End.DateTime)).setMinutes(new Date(JSON.parse($scope.ezapptEvents[k]).End.DateTime).getMinutes() - 5)).toISOString(), k);
-
-                    //CreateEvent(k);
-                }
-                else {
-                    //appt after creating ezappt cal
-                    var k = 0;
-                    //new Date(new Date(dt).setMinutes(dt.getMinutes() + 30)).toISOString()
-                    getAndDeleteEvents(new Date(new Date(new Date($scope.allSyncAppts[k].dtStart)).setMinutes(new Date($scope.allSyncAppts[k].dtStart).getMinutes() + 30)).toISOString(), new Date($scope.allSyncAppts[k].dtEnd).toISOString(), k);
+        if (sessionStorage.getItem('calendarID')) {
+            $scope.newlyCreated = false;
+            if ($scope.key === 'avTimes') {
+                for (i = 0; i < $scope.avTimes.length; i++) {
+                    var events = getEvents(new Date($scope.avTimes[i].startDt), new Date($scope.avTimes[i].endDt), Number($scope.avTimes[i].startTime.replace(':30', '.5').replace(':00', '')), Number($scope.avTimes[i].endTime.replace(':30', '.5').replace(':00', '')), $scope.avTimes[i].days)
+                    $scope.ezapptEvents = $scope.ezapptEvents.concat(events);
 
                 }
+                var k = 0;
+                if ($scope.ezapptEvents.length != 0)
+                    getAndDeleteEvents(new Date(new Date(new Date(JSON.parse($scope.ezapptEvents[k]).Start.DateTime)).setMinutes(new Date(JSON.parse($scope.ezapptEvents[k]).Start.DateTime).getMinutes() + 5)).toISOString(), new Date(new Date(new Date(JSON.parse($scope.ezapptEvents[k]).End.DateTime)).setMinutes(new Date(JSON.parse($scope.ezapptEvents[k]).End.DateTime).getMinutes() - 5)).toISOString(), k);
+
+                //CreateEvent(k);
             }
             else {
-                //no calendar
-                $scope.newlyCreated = true;
-                CreateEzapptCalendar();
+                //appt after creating ezappt cal
+                var k = 0;
+                //new Date(new Date(dt).setMinutes(dt.getMinutes() + 30)).toISOString()
+                getAndDeleteEvents(new Date(new Date(new Date($scope.allSyncAppts[k].dtStart)).setMinutes(new Date($scope.allSyncAppts[k].dtStart).getMinutes() + 30)).toISOString(), new Date($scope.allSyncAppts[k].dtEnd).toISOString(), k);
+
             }
-        }).fail(errorHandler);
+        }
+        else
+            $.ajax({
+                url: restUrl + 'calendars',
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': 'Bearer ' + rawToken,
+                    'Cache-Control': 'no-cache',
+                    'Pragma': 'no-cache'
+                }
+            }).done(function (item) {
+                if (CalendarExists(item.value)) {
+                    $scope.newlyCreated = false;
+                    if ($scope.key === 'avTimes') {
+                        for (i = 0; i < $scope.avTimes.length; i++) {
+                            var events = getEvents(new Date($scope.avTimes[i].startDt), new Date($scope.avTimes[i].endDt), Number($scope.avTimes[i].startTime.replace(':30', '.5').replace(':00', '')), Number($scope.avTimes[i].endTime.replace(':30', '.5').replace(':00', '')), $scope.avTimes[i].days)
+                            $scope.ezapptEvents = $scope.ezapptEvents.concat(events);
+
+                        }
+                        var k = 0;
+                        if ($scope.ezapptEvents.length != 0)
+                            getAndDeleteEvents(new Date(new Date(new Date(JSON.parse($scope.ezapptEvents[k]).Start.DateTime)).setMinutes(new Date(JSON.parse($scope.ezapptEvents[k]).Start.DateTime).getMinutes() + 5)).toISOString(), new Date(new Date(new Date(JSON.parse($scope.ezapptEvents[k]).End.DateTime)).setMinutes(new Date(JSON.parse($scope.ezapptEvents[k]).End.DateTime).getMinutes() - 5)).toISOString(), k);
+
+                        //CreateEvent(k);
+                    }
+                    else {
+                        //appt after creating ezappt cal
+                        var k = 0;
+                        //new Date(new Date(dt).setMinutes(dt.getMinutes() + 30)).toISOString()
+                        getAndDeleteEvents(new Date(new Date(new Date($scope.allSyncAppts[k].dtStart)).setMinutes(new Date($scope.allSyncAppts[k].dtStart).getMinutes() + 30)).toISOString(), new Date($scope.allSyncAppts[k].dtEnd).toISOString(), k);
+
+                    }
+                }
+                else {
+                    //no calendar
+                    $scope.newlyCreated = true;
+                    CreateEzapptCalendar();
+                }
+            }).fail(errorHandler);
 
     }
     function CreateEzapptCalendar() {
@@ -155,6 +184,7 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
             }
         }).done(function (item) {
             CalendarID = item.Id;
+            sessionStorage.setItem('calendarID', CalendarID);
             $scope.ezapptEvents = [];
 
             if ($scope.key === 'avTimes') {
@@ -184,7 +214,9 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                'Authorization': 'Bearer ' + rawToken
+                'Authorization': 'Bearer ' + rawToken,
+                'Cache-Control': 'no-cache',
+                'Pragma': 'no-cache'
             }
         }).done(function (item) {
 
