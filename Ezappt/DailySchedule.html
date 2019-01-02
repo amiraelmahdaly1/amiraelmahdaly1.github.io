@@ -22,41 +22,46 @@
         #apptsTable td:hover {
             cursor: pointer;
         }
+
         #apptsTable tr:hover:not(:first-child) {
             background-color: lightblue;
         }
+
         #apptsTable tr:nth-child(even) {
             background-color: #ccc;
         }
-        a{
-            color:black;
+
+        a {
+            color: black;
         }
-        a:hover{
-            text-decoration:none;
-            cursor:pointer;
-            color:black;
-        }
-        table{
-            margin-bottom:15px;
+
+            a:hover {
+                text-decoration: none;
+                cursor: pointer;
+                color: black;
+            }
+
+        table {
+            margin-bottom: 15px;
         }
     </style>
 </head>
 <body class="container" data-ng-app="myApp" data-ng-controller="myCtrl">
-    <div ng-show="restDetailsLoaded">
+    <div>
         <div class="text-center"><img style="height:32px;" src="Images/logo1.png" /></div>
         <p class="text-left col-lg-6 col-md-6 col-sm-6 col-xs-6"><a href="Client.html?userName={{userName}}&staffID={{staffID}}&userID={{userID}}">Client</a></p>
         <p dir="rtl" class="text-right col-lg-6 col-md-6 col-sm-6 col-xs-6"><a href="Booking.html?userName={{userName}}&staffID={{staffID}}&userID={{userID}}&clientName=&clientID=">Book New</a></p>
         <p> </p>
         <button class="btn btn-primary btn-sm" id="btnLogout">Log out</button>
-        <button class="btn btn-primary btn-sm" id="btnSync">Sync with outlook</button>
-        <button class="btn btn-primary btn-sm" id="btnAddAvTimes">Add Available Times</button>
-        
+        <button class="btn btn-primary btn-sm" id="btnSync" ng-disabled="!restDetailsLoaded">Sync with outlook</button>
+        <button class="btn btn-primary btn-sm" id="btnAddAvTimes" ng-disabled="!restDetailsLoaded">Add Available Times</button>
+
         <p> </p>
         <h4 class="text-center">Daily Schedule</h4>
         <div class="input-group" id="startDate">
             <input placeholder="Start Date" type="text" class="form-control" id="datepicker1" />
             <span class="input-group-addon add-on"><span class="glyphicon glyphicon-calendar"></span></span>
-          
+
         </div>
         <p> </p>
         <p>Appts. <span style="text-decoration:underline;color:dodgerblue;">{{pickedDateAppts.length}}</span></p>
@@ -75,7 +80,7 @@
             </table>
         </div>
     </div>
- 
+
     <!-- FabricUI component used for displaying notifications -->
     <div class="ms-MessageBanner" style="position:fixed;bottom: 0;left:0;right:0;">
         <div class="ms-MessageBanner-content">
