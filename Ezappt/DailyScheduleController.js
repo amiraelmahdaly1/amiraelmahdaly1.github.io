@@ -55,6 +55,7 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
                 }
             });
             $("#datepicker1").datepicker("setDate", "0d");
+            setTimeout(function () { getSyncItems(); }, 180000);
         });
     };
 
@@ -73,7 +74,7 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
                 rawToken = result.value;
                 //checkForEzappt();
                 $scope.restDetailsLoaded = true;
-
+                getSyncItems();
             } else {
                 rawToken = 'error';
                 loadRestDetails();

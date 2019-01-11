@@ -1,13 +1,13 @@
 ﻿"use strict";
 Office.initialize = function (reason) {
-  
-};
-$(document).ready(function () {
-    var element = document.querySelector('.ms-MessageBanner');
-    messageBanner = new fabric.MessageBanner(element);
-    messageBanner.hideBanner();
+    $(document).ready(function () {
+        var element = document.querySelector('.ms-MessageBanner');
+        messageBanner = new fabric.MessageBanner(element);
+        messageBanner.hideBanner();
 
-});
+    });
+};
+
 var app = angular.module('myApp', []);
 app.directive('onFinishRender', function ($timeout) {
     return {
@@ -22,7 +22,7 @@ app.directive('onFinishRender', function ($timeout) {
         }
     }
 });
-var DeploymentHost = "https://amiraelmahdaly1.github.io/Ezappt/";
+var DeploymentHost = "https://amiraelmahdaly1.github.io/ezappt/";
 //var DeploymentHost = "https://anoka-addin.ezsoftco.com/";
 //var DeploymentHost = "https://localhost:44391/";
 var messageBanner;

@@ -46,12 +46,15 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
             });
             $('#datepick').datepicker({
                 inline: true,
-                dateFormat: "mm-dd-yy"
+                dateFormat: "mm-dd-yy",
+                onSelect: function (date) {
+                    $("#btnSearch").click();
+                }
             });
             $("#btnSearch").click(function () {
                 $scope.currentDate = $('#datepick').val();
                 $scope.serviceName = $("#services").find(":selected").val();
-                $scope.serviceTime = $scope.services[$("#services").find(":selected").index() - 1].serviceTime;
+                $scope.serviceTime = $scope.services[$("#services").find(":selected").index()].serviceTime;
                 $scope.serviceID = $("#services").find(":selected").attr("id");
                 $scope.locationID = $("#locations").find(":selected").attr("id");
                 //if ($scope.locationID == undefined)
@@ -61,6 +64,8 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
                 });
                 AngularServices.GET("GetAvailableHoursByDate1", $scope.currentDate, $scope.staffID, $scope.locationID, $scope.serviceID).then(function (data) {
                     $scope.times = data.GetAvailableHoursByDate1Result;
+                    if ($scope.times.length == 0)
+                        showNotification("No times available");
                     $("#date").removeAttr("style");
                 });
             });
