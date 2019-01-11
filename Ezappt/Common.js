@@ -22,7 +22,7 @@ app.directive('onFinishRender', function ($timeout) {
         }
     }
 });
-var DeploymentHost = "https://amiraelmahdaly1.github.io/ezappt/";
+var DeploymentHost = "https://amiraelmahdaly1.github.io/Ezappt/";
 //var DeploymentHost = "https://anoka-addin.ezsoftco.com/";
 //var DeploymentHost = "https://localhost:44391/";
 var messageBanner;
