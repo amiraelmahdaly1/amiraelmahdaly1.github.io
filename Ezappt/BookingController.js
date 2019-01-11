@@ -29,8 +29,12 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
         '7': 'Fraud'
     };
     // Event Handlers
+
     Office.initialize = function (reason) {
         $(document).ready(function () {
+            var element = document.querySelector('.ms-MessageBanner');
+            messageBanner = new fabric.MessageBanner(element);
+            messageBanner.hideBanner();
             loadRestDetails();
             $("#tags").val($scope.clientName);
             AngularServices.GET("GetAllClients").then(function (data) {

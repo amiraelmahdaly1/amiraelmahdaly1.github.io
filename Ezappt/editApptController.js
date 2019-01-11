@@ -3,24 +3,30 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
     $scope.appt = {};
     var staffID = getQueryStringValue("staffID");
     var userID = getQueryStringValue("userID");
-    $(document).ready(function () {
-        $scope.appt = JSON.parse(decodeURIComponent(getQueryStringValue("appt")));
-        $scope.$applyAsync();
-        $("#" + $scope.appt.category).prop("checked", true);
-        $("#datetimepicker1").appendDtpicker({
-            "dateFormat": "M/D/YYYY h:mm",
-            "current": $scope.appt.dtStart.substring(0, $scope.appt.dtStart.length - 6)
-        });
-        $("#select1").val($scope.appt.dtStart.slice(-2));
-        $('#select1').prop('disabled', 'disabled');
-        $("#datetimepicker2").appendDtpicker({
-            "dateFormat": "M/D/YYYY h:mm",
-            "current": $scope.appt.dtEnd.substring(0, $scope.appt.dtEnd.length - 6)
-        });
-        $("#select2").val($scope.appt.dtEnd.slice(-2));
-        $('#select2').prop('disabled', 'disabled');
+    Office.initialize = function (reason) {
+        $(document).ready(function () {
+            var element = document.querySelector('.ms-MessageBanner');
+            messageBanner = new fabric.MessageBanner(element);
+            messageBanner.hideBanner();
+            $scope.appt = JSON.parse(decodeURIComponent(getQueryStringValue("appt")));
+            $scope.$applyAsync();
+            $("#" + $scope.appt.category).prop("checked", true);
+            $("#datetimepicker1").appendDtpicker({
+                "dateFormat": "M/D/YYYY h:mm",
+                "current": $scope.appt.dtStart.substring(0, $scope.appt.dtStart.length - 6)
+            });
+            $("#select1").val($scope.appt.dtStart.slice(-2));
+            $('#select1').prop('disabled', 'disabled');
+            $("#datetimepicker2").appendDtpicker({
+                "dateFormat": "M/D/YYYY h:mm",
+                "current": $scope.appt.dtEnd.substring(0, $scope.appt.dtEnd.length - 6)
+            });
+            $("#select2").val($scope.appt.dtEnd.slice(-2));
+            $('#select2').prop('disabled', 'disabled');
 
-    });
+        });
+    };
+ 
     $("#reschedule").click(function () {
         $("#select1, #select2, #datetimepicker1, #datetimepicker2").removeAttr("disabled");
     });

@@ -1,7 +1,11 @@
 ﻿var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
     $scope.Password = "";// "test11";
     $scope.Email = "";// "Lynns@ezappt.com";
-
+    Office.initialize = function (reason) {
+        var element = document.querySelector('.ms-MessageBanner');
+        messageBanner = new fabric.MessageBanner(element);
+        messageBanner.hideBanner();
+    };
    
     $("#btnLogin").click(Login);
     function Login() {

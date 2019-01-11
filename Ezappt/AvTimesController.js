@@ -16,6 +16,11 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
         'locID': ''
         }
     // Event Handlers
+    Office.initialize = function (reason) {
+            var element = document.querySelector('.ms-MessageBanner');
+            messageBanner = new fabric.MessageBanner(element);
+            messageBanner.hideBanner();
+    };
     $(document).ready(function () {
         $(function () {
             $('input[name="datetimes"]').daterangepicker({           

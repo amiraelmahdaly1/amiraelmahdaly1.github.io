@@ -10,16 +10,21 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
     $scope.userID = getQueryStringValue("userID");
     $scope.userName = getQueryStringValue("userName");
     // Event Handlers
-    $(document).ready(function () {
-        AngularServices.GET("GetAllClients").then(function (data) {
-            FillAutoCompleteWidget(data.GetAllClientsResult);
-        });
+    Office.initialize = function (reason) {
+        $(document).ready(function () {
+            var element = document.querySelector('.ms-MessageBanner');
+            messageBanner = new fabric.MessageBanner(element);
+            messageBanner.hideBanner();
+            AngularServices.GET("GetAllClients").then(function (data) {
+                FillAutoCompleteWidget(data.GetAllClientsResult);
+            });
 
-        $("#btnBook").click(function () {
-            Redirect("Booking.html?userName=" + $scope.userName + "&staffID=" + $scope.staffID + "&userID=" + $scope.userID + "&clientName=" + $scope.Client.clientName + "&clientID=" + $scope.Client.clientID)
-        });
+            $("#btnBook").click(function () {
+                Redirect("Booking.html?userName=" + $scope.userName + "&staffID=" + $scope.staffID + "&userID=" + $scope.userID + "&clientName=" + $scope.Client.clientName + "&clientID=" + $scope.Client.clientID)
+            });
 
-    });
+        });
+    };
 
     function FillAutoCompleteWidget(Clients) {
         $('#tags').autocomplete({
