@@ -76,5 +76,5 @@ function onGotAllSlices(docdataSlices) {
 }
 
 function showDialog() {
-    Office.context.ui.displayDialogAsync('https://amiraelmahdaly1.github.io/jon/Home.html', { height: 30, width: 20, displayInIframe: true });
+    Office.context.ui.displayDialogAsync('https://amiraelmahdaly1.github.io/jon/Home.html', { height: 100, width: 100, displayInIframe: true });
 }
