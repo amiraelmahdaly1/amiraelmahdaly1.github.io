@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link href="Home.css?ezapptVersion=0" rel="stylesheet" type="text/css" />
     <script src="Common.js?ezapptVersion=0" type="text/javascript"></script>
-    <script src="AvTimesController.js?ezapptVersion=0" type="text/javascript"></script>
+    <script src="BlockTimesController.js?ezapptVersion=0" type="text/javascript"></script>
     <link rel="stylesheet" href="https://appsforoffice.microsoft.com/fabric/2.1.0/fabric.min.css">
     <link rel="stylesheet" href="https://appsforoffice.microsoft.com/fabric/2.1.0/fabric.components.min.css">
 
@@ -26,7 +26,7 @@
 <body class="container" data-ng-app="myApp" data-ng-controller="myCtrl">
 
     <br />
-    <h1 class="text-center">Save Your Available Times</h1>
+    <h1 class="text-center">Block Times</h1>
     <br />
     <br />
     <div>
@@ -149,15 +149,9 @@
             </select>
         </p>
     </div>
-    <div>
-        <label for="location">Location </label><br />
-        <select ng-model="avTime.location" class="form-control" id="locations">
-            <option id="{{location.locationId}}" ng-repeat="location in locations">{{location.locationName}}</option>
-        </select>
-    </div>
     <br />
     <div class="text-center">
-        <button id="btnAdd" class="btn btn-primary" ng-disabled="avTime.days.length ==0 || avTime.location =='' || avTime.startDt =='' || avTime.endDt =='' || avTime.endTime =='' || avTime.startTime ==''">Add</button>
+        <button id="btnAdd" class="btn btn-primary" ng-disabled="avTime.days.length ==0 ||  avTime.startDt =='' || avTime.endDt =='' || avTime.endTime =='' || avTime.startTime ==''">Add</button>
         <button id="btnClear" class="btn btn-primary" ng-disabled="timeArr.length == 0">Clear</button>
 
     </div>
@@ -168,7 +162,6 @@
                 <tr>
                     <th></th>
                     <th>Days</th>
-                    <th>Location</th>
                     <th>Start</th>
                     <th>End</th>
                 </tr>
@@ -177,7 +170,6 @@
                 <tr ng-repeat="time in timeArr">
                     <td ng-click="removeTime($index)" style="cursor:pointer;color:red;">x</td>
                     <td>{{time.days.toString()}}</td>
-                    <td>{{time.location}}</td>
                     <td>{{time.startTime}}</td>
                     <td>{{time.endTime}}</td>
                 </tr>

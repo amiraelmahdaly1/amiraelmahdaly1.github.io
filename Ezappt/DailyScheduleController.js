@@ -27,6 +27,8 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
     var editApptDialogUrl = DeploymentHost + "editAppt.html?staffID=" + $scope.staffID + "&userID=" + $scope.userID;
     var editAvTimesDialog;
     var editAvTimesDialogUrl = DeploymentHost + "AvTimes.html?staffID=" + $scope.staffID + "&userID=" + $scope.userID;
+    var blockTimesDialog;
+    var blockTimesDialogUrl = DeploymentHost + "BlockTimes.html?staffID=" + $scope.staffID + "&userID=" + $scope.userID;
     var editApptDialogUrlStringified = "";
     var CalendarID;
     $scope.avTimes = [];
@@ -46,6 +48,7 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
                 Redirect("Home.html");
             });
             $("#btnAddAvTimes").click(ShowAvTimesDialog);
+            $("#btnBlockTimes").click(ShowBlockTimesDialog);
             $("#btnSync").click(getSyncItems);
             $("#datepicker1").datepicker({
                 defaultDate: "0d",
@@ -100,6 +103,14 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
             }
         );
     }
+    function ShowBlockTimesDialog() {
+        Office.context.ui.displayDialogAsync(blockTimesDialogUrl, { height: 70, width: 60, displayInIframe: true },
+            function (asyncResult) {
+                blockTimesDialog = asyncResult.value;
+                blockTimesDialog.addEventHandler(Office.EventType.DialogMessageReceived, BlockTimesDialogMessageReceived);
+            }
+        );
+    }
     function editAvTimesDialogMessageReceived(arg) {
         $scope.avTimes = JSON.parse(arg.message);
         editAvTimesDialog.close();
@@ -110,10 +121,20 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
         }
 
     }
+    function BlockTimesDialogMessageReceived(arg) {
+        $scope.avTimes = JSON.parse(arg.message);
+        blockTimesDialog.close();
+        //showNotification("Please wait until ezappt calendar is created.");
+        if ($scope.avTimes.length != 0) {
+            $scope.key = 'blockTimes';
+            checkForEzappt();
+        }
+
+    }
     function checkForEzappt() {
         if (sessionStorage.getItem('calendarID')) {
             $scope.newlyCreated = false;
-            if ($scope.key === 'avTimes') {
+            if ($scope.key === 'avTimes' || $scope.key === 'blockTimes') {
                 for (i = 0; i < $scope.avTimes.length; i++) {
                     var events = getEvents(new Date($scope.avTimes[i].startDt), new Date($scope.avTimes[i].endDt), Number($scope.avTimes[i].startTime.replace(':30', '.5').replace(':00', '')), Number($scope.avTimes[i].endTime.replace(':30', '.5').replace(':00', '')), $scope.avTimes[i].days)
                     $scope.ezapptEvents = $scope.ezapptEvents.concat(events);
@@ -146,7 +167,7 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
             }).done(function (item) {
                 if (CalendarExists(item.value)) {
                     $scope.newlyCreated = false;
-                    if ($scope.key === 'avTimes') {
+                    if ($scope.key === 'avTimes' || $scope.key === 'blockTimes') {
                         for (i = 0; i < $scope.avTimes.length; i++) {
                             var events = getEvents(new Date($scope.avTimes[i].startDt), new Date($scope.avTimes[i].endDt), Number($scope.avTimes[i].startTime.replace(':30', '.5').replace(':00', '')), Number($scope.avTimes[i].endTime.replace(':30', '.5').replace(':00', '')), $scope.avTimes[i].days)
                             $scope.ezapptEvents = $scope.ezapptEvents.concat(events);
@@ -188,7 +209,7 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
             sessionStorage.setItem('calendarID', CalendarID);
             $scope.ezapptEvents = [];
 
-            if ($scope.key === 'avTimes') {
+            if ($scope.key === 'avTimes' || $scope.key === 'blockTimes') {
                 for (i = 0; i < $scope.avTimes.length; i++) {
                     var events = getEvents(new Date($scope.avTimes[i].startDt), new Date($scope.avTimes[i].endDt), Number($scope.avTimes[i].startTime.replace(':30', '.5').replace(':00', '')), Number($scope.avTimes[i].endTime.replace(':30', '.5').replace(':00', '')), $scope.avTimes[i].days)
                     $scope.ezapptEvents = $scope.ezapptEvents.concat(events);
@@ -232,8 +253,12 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
                     i++;
                     if (i < $scope.ezapptEvents.length)
                         getAndDeleteEvents(new Date(new Date(new Date(JSON.parse($scope.ezapptEvents[i]).Start.DateTime)).setMinutes(new Date(JSON.parse($scope.ezapptEvents[i]).Start.DateTime).getMinutes() + 5)).toISOString(), new Date(new Date(new Date(JSON.parse($scope.ezapptEvents[i]).End.DateTime)).setMinutes(new Date(JSON.parse($scope.ezapptEvents[i]).End.DateTime).getMinutes() - 5)).toISOString(), i);
-                    else
-                        showNotification("outlook Available times sync completed.");
+                    else {
+                        if ($scope.key === "avTimes")
+                            showNotification("outlook Available times sync completed.");
+                        else
+                            showNotification("Blocking times completed.");
+                    }
                 }
 
             }
@@ -261,7 +286,7 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
     }
     function CreateEvent(k) {
         var apptSynced;
-        if ($scope.key === 'avTimes') {
+        if ($scope.key === 'avTimes' || $scope.key === 'blockTimes') {
             apptSynced = $scope.ezapptEvents[k];
             $.ajax({
                 //'url': restUrl + '/events',
@@ -439,10 +464,14 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
         for (var i = 0; i < Dates.length; i++) {
             dt = new Date(Dates[i].toString());
             dt.setHours(dt.getHours() + startTime);
+            var event;
             if (!Number.isInteger(startTime))
                 dt.setMinutes(dt.getMinutes() + 30);
             for (var j = 0; j < (endTime - startTime) * 2; j++) {
-                var event = '{"Subject": "", "Categories": ["Free"],"Body": {"ContentType": "HTML","Content": ""},"Start": {"DateTime": "' + new Date(dt).toISOString() + '","TimeZone": "Pacific Standard Time"},"End": {"DateTime": "' + new Date(new Date(dt).setMinutes(dt.getMinutes() + 30)).toISOString() + '","TimeZone": "Pacific Standard Time"},"Attendees": []}';
+                if ($scope.key === "avTimes")
+                    event = '{"Subject": "", "Categories": ["Free"],"Body": {"ContentType": "HTML","Content": ""},"Start": {"DateTime": "' + new Date(dt).toISOString() + '","TimeZone": "Pacific Standard Time"},"End": {"DateTime": "' + new Date(new Date(dt).setMinutes(dt.getMinutes() + 30)).toISOString() + '","TimeZone": "Pacific Standard Time"},"Attendees": []}';
+                else 
+                    event = '{"Subject": "", "Categories": ["Red category"],"Body": {"ContentType": "HTML","Content": ""},"Start": {"DateTime": "' + new Date(dt).toISOString() + '","TimeZone": "Pacific Standard Time"},"End": {"DateTime": "' + new Date(new Date(dt).setMinutes(dt.getMinutes() + 30)).toISOString() + '","TimeZone": "Pacific Standard Time"},"Attendees": []}';
                 Events.push(event);
                 dt.setMinutes(dt.getMinutes() + 30);
             }

@@ -1,8 +1,6 @@
 ﻿var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
 Office.initialize = function (reason) {
-    var element = document.querySelector('.ms-MessageBanner');
-    messageBanner = new fabric.MessageBanner(element);
-    messageBanner.hideBanner();
+
     };
 
     if (localStorage.getItem('staffID') === null)
