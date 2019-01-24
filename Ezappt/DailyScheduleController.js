@@ -404,14 +404,24 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
                     CreateEvent(n);
                 }
                 else
-                    showNotification("Syncing available times finished successfully");
+                {
+                    if ($scope.key === "avTimes")
+                        showNotification("outlook Available times sync completed.");
+                    else
+                        showNotification("Blocking times completed.");
+                }
             }
             else {
                 n++;
                 if (n < $scope.ezapptEvents.length)
                     getAndDeleteEvents(new Date(new Date(new Date(JSON.parse($scope.ezapptEvents[n]).Start.DateTime)).setMinutes(new Date(JSON.parse($scope.ezapptEvents[n]).Start.DateTime).getMinutes() + 5)).toISOString(), new Date(new Date(new Date(JSON.parse($scope.ezapptEvents[n]).End.DateTime)).setMinutes(new Date(JSON.parse($scope.ezapptEvents[n]).End.DateTime).getMinutes() - 5)).toISOString(), n);
                 else
-                    showNotification("outlook Available times sync completed.");
+                {
+                    if ($scope.key === "avTimes")
+                        showNotification("outlook Available times sync completed.");
+                    else
+                        showNotification("Blocking times completed.");
+                }
             }
 
         }).fail(errorHandler);
