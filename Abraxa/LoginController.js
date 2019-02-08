@@ -38,7 +38,7 @@
                         showNotification("Invalid Email or Password")
                         break;
                     default:
-                        Redirect("Login.html");
+                        //Redirect("Login.html");
                         break;
                 }
             }
