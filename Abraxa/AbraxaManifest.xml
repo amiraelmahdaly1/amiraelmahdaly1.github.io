@@ -37,7 +37,7 @@
   <FormSettings>
     <Form xsi:type="ItemRead">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://amiraelmahdaly1.github.io/Abraxa/Index.html" />
+        <SourceLocation DefaultValue="https://amiraelmahdaly1.github.io/Abraxa/index.html" />
         <RequestedHeight>250</RequestedHeight>
       </DesktopSettings>
     </Form>
@@ -96,13 +96,13 @@
 
     <Resources>
       <bt:Images>
-        <bt:Image id="icon16" DefaultValue="https://amiraelmahdaly1.github.io/Abraxa/Images/icon16.png" />
-        <bt:Image id="icon32" DefaultValue="https://amiraelmahdaly1.github.io/Abraxa/Images/icon32.png" />
-        <bt:Image id="icon80" DefaultValue="https://amiraelmahdaly1.github.io/Abraxa/Images/icon80.png" />
+        <bt:Image id="icon16" DefaultValue="https://amiraelmahdaly1.github.io/Abraxa/Images/Icon16.png" />
+        <bt:Image id="icon32" DefaultValue="https://amiraelmahdaly1.github.io/Abraxa/Images/Icon32.png" />
+        <bt:Image id="icon80" DefaultValue="https://amiraelmahdaly1.github.io/Abraxa/Images/Icon80.png" />
       </bt:Images>
       <bt:Urls>
         <bt:Url id="functionFile" DefaultValue="https://amiraelmahdaly1.github.io/Abraxa/Functions/FunctionFile.html" />
-        <bt:Url id="messageReadTaskPaneUrl" DefaultValue="https://amiraelmahdaly1.github.io/Abraxa/Index.html" />
+        <bt:Url id="messageReadTaskPaneUrl" DefaultValue="https://amiraelmahdaly1.github.io/Abraxa/index.html" />
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="groupLabel" DefaultValue="Abraxa" />
