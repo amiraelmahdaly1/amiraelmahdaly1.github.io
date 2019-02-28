@@ -7,11 +7,11 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
     var userID = getQueryStringValue("userID");
     $scope.timeArr = [];
     $scope.avTime = {
-        'days': [],
         'startDt': '',
         'endDt': '',
         'startTime': '',
-        'endTime': ''
+        'endTime': '',
+        'location':''
         }
     // Event Handlers
     Office.initialize = function (reason) {
@@ -21,51 +21,29 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
     };
     $(document).ready(function () {
         $(function () {
-            $('input[name="datetimes"]').daterangepicker({           
-                locale: {
-                    format: 'MM-DD-YYYY'
-                },
-                autoUpdateInput: false
-            }, function (start, end) {
-                $scope.avTime.startDt = start.format('MM-DD-YYYY');
-                $scope.avTime.endDt = end.format('MM-DD-YYYY');
-                $('#datetimes').val(start.format('MM-DD-YYYY') + "-" + end.format('MM-DD-YYYY'));
-                //console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+            $("#datepicker1").datepicker({
+                defaultDate: "0d",
+                dateFormat: "mm-dd-yy",
+                onSelect: function (date) {
+                    $scope.avTime.startDt = date;
+                    $scope.avTime.endDt = date;
+                }
             });
-        });
 
+        });
+        AngularServices.GET("GetAllStaffLocations", staffID).then(function (data) {
+            $scope.locations = data.GetAllStaffLocationsResult;
+        });
         $("#btnSave").click(function () {
-            Office.context.ui.messageParent(JSON.stringify($scope.timeArr));
-        });
-        $("#btnClear").click(function () {
-            $scope.timeArr = [];
-            $scope.$apply();
-        });
-        $("#btnAdd").click(function () {
             $scope.avTime.locID = Number($("#locations").find(":selected").attr("id"));
             var avTime = JSON.parse(JSON.stringify($scope.avTime));
             $scope.timeArr.push(avTime);
-            $scope.$apply();
+            Office.context.ui.messageParent(JSON.stringify($scope.timeArr));
         });
+       
     });
 
-    $scope.removeTime = function (ind) {
-        $scope.timeArr.splice(ind, 1);
-    }
-    $scope.toggleSelection = function toggleSelection(neb) {
-        var idx = $scope.avTime.days.indexOf(neb);
-
-        // Is currently selected
-        if (idx > -1) {
-            $scope.avTime.days.splice(idx, 1);
-        }
-
-        // Is newly selected
-        else {
-            $scope.avTime.days.push(neb);
-        }
-    };
-  
+   
 
 }];
 

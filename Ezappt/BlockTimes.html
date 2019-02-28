@@ -11,9 +11,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link href="Home.css?ezapptVersion=0" rel="stylesheet" type="text/css" />
@@ -29,20 +28,13 @@
     <h1 class="text-center">Block Times</h1>
     <br />
     <br />
-    <div>
-        <label for="datetimes">Start Date - End Date</label><br />
-        <input class="form-control" id="datetimes" name="datetimes" />
+    <div class="input-group" id="startDate">
+        <input placeholder="Date" type="text" class="form-control" id="datepicker1" />
+        <span class="input-group-addon add-on"><span class="glyphicon glyphicon-calendar"></span></span>
+
     </div>
     <br />
-    <div>
-        <label><input class="checkbox1" type="checkbox" ng-click="toggleSelection(1)"/> Mon</label>
-        <label><input class="checkbox1" type="checkbox" ng-click="toggleSelection(2)" /> Tue</label>
-        <label><input class="checkbox1" type="checkbox" ng-click="toggleSelection(3)"/> Wed</label>
-        <label><input class="checkbox1" type="checkbox" ng-click="toggleSelection(4)"/> Thu</label>
-        <label><input class="checkbox1" type="checkbox" ng-click="toggleSelection(5)"/> Fri</label>
-        <label><input class="checkbox1" type="checkbox" ng-click="toggleSelection(6)"/> Sat</label>
-        <label><input class="checkbox1" type="checkbox" ng-click="toggleSelection(0)"/> Sun</label>
-    </div>
+
     <br />
     <div>
         <label style="display:block;">Start time - End time</label>
@@ -150,35 +142,16 @@
         </p>
     </div>
     <br />
-    <div class="text-center">
-        <button id="btnAdd" class="btn btn-primary" ng-disabled="avTime.days.length ==0 ||  avTime.startDt =='' || avTime.endDt =='' || avTime.endTime =='' || avTime.startTime ==''">Add</button>
-        <button id="btnClear" class="btn btn-primary" ng-disabled="timeArr.length == 0">Clear</button>
-
+    <div>
+        <label for="location">Location </label><br />
+        <select ng-model="avTime.location" class="form-control" id="locations">
+            <option id="{{location.locationId}}" ng-repeat="location in locations">{{location.locationName}}</option>
+        </select>
     </div>
     <br />
-    <div ng-if="timeArr.length != 0" class="table-responsive">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Days</th>
-                    <th>Start</th>
-                    <th>End</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="time in timeArr">
-                    <td ng-click="removeTime($index)" style="cursor:pointer;color:red;">x</td>
-                    <td>{{time.days.toString()}}</td>
-                    <td>{{time.startTime}}</td>
-                    <td>{{time.endTime}}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <br />
+   
     <div class="text-right">
-        <button id="btnSave" class="btn btn-primary" ng-disabled="timeArr.length == 0">Save</button>
+       <button id="btnSave" class="btn btn-primary" ng-disabled=" avTime.location =='' || avTime.startDt =='' || avTime.endDt =='' || avTime.endTime =='' || avTime.startTime ==''"">Save</button>
     </div>
     <!-- FabricUI component used for displaying notifications -->
     <div class="ms-MessageBanner" style="position:absolute;bottom: 0;left:0;right:0;">

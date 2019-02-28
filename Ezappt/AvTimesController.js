@@ -14,16 +14,16 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
         'startTime': '',
         'endTime': '',
         'locID': ''
-        }
+    }
     // Event Handlers
     Office.initialize = function (reason) {
-            var element = document.querySelector('.ms-MessageBanner');
-            messageBanner = new fabric.MessageBanner(element);
-            messageBanner.hideBanner();
+        var element = document.querySelector('.ms-MessageBanner');
+        messageBanner = new fabric.MessageBanner(element);
+        messageBanner.hideBanner();
     };
     $(document).ready(function () {
         $(function () {
-            $('input[name="datetimes"]').daterangepicker({           
+            $('input[name="datetimes"]').daterangepicker({
                 locale: {
                     format: 'MM-DD-YYYY'
                 },
@@ -40,12 +40,12 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
             $scope.locations = data.GetAllStaffLocationsResult;
         });
         $("#btnSave").click(function () {
-            var timeArr = JSON.parse(JSON.stringify( $scope.timeArr));
+            var timeArr = JSON.parse(JSON.stringify($scope.timeArr));
             saveAvTimes(timeArr);
         });
         $("#btnClear").click(function () {
             $scope.timeArr = [];
-     
+
             $scope.$apply();
         });
         $("#btnAdd").click(function () {
@@ -62,7 +62,7 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
     $scope.removeTime = function (ind) {
         $scope.timeArr.splice(ind, 1);
     }
-    $scope.toggleSelection = function toggleSelection(neb,id) {
+    $scope.toggleSelection = function toggleSelection(neb, id) {
         var idx = $scope.avTime.days.indexOf(neb);
 
         // Is currently selected
@@ -76,7 +76,7 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
         }
     };
     function saveAvTimes(timeArr) {
-   
+
         var t = timeArr.pop();
         if (t == null || t == undefined) {
             showNotification("Saved Successfully.");
@@ -84,15 +84,12 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
             return;
         }
 
-            AngularServices.POST("CreateSchedule",
-                {
-                    "staffSchedJson": { "StaffId": staffID, "StartDate": t.startDt, "EndDate": t.endDt, "StartTime": t.startTime, "EndTime": t.endTime, "LocationId": t.locID, "SelectedDays": t.days.toString() }
-                }).then(function (data) {
-                    saveAvTimes(timeArr);
-                });
-        
-
-        
+        AngularServices.POST("CreateSchedule",
+            {
+                "staffSchedJson": { "StaffId": staffID, "StartDate": t.startDt, "EndDate": t.endDt, "StartTime": t.startTime, "EndTime": t.endTime, "LocationId": t.locID, "SelectedDays": t.days.toString() }
+            }).then(function (data) {
+                saveAvTimes(timeArr);
+            });
 
     }
 

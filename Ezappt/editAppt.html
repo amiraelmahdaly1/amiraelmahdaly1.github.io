@@ -35,13 +35,13 @@
         <input id="datetimepicker2" type="text" disabled="disabled"> <select id="select2"><option>AM</option><option>PM</option></select>
     </p>
     <p class="col-xs-3 col-md-3 col-lg-3">Status</p><p class="col-xs-9 col-md-9 col-lg-9">
-        <label class="radio-inline"><input id="1" type="radio" name="status" /> Active</label>
-        <label class="radio-inline"><input id="2" type="radio" name="status" /> No Show</label>
+        <label ng-show="appt.client != 'Blocked Time'" class="radio-inline"><input id="1" type="radio" name="status" /> Active</label>
+        <label ng-show="appt.client != 'Blocked Time'" class="radio-inline"><input id="2" type="radio" name="status" /> No Show</label>
         <label class="radio-inline"><input id="3" type="radio" name="status" /> Cancelled</label>
-        <label class="radio-inline"><input id="4" type="radio" name="status" /> Completed</label>
-        <label class="radio-inline"><input id="5" type="radio" name="status" /> Arrived</label>
-        <label class="radio-inline"><input id="6" type="radio" name="status" /> In Progress</label>
-        <label class="radio-inline"><input id="7" type="radio" name="status" /> Fraud</label>
+        <label ng-show="appt.client != 'Blocked Time'" class="radio-inline"><input id="4" type="radio" name="status" /> Completed</label>
+        <label ng-show="appt.client != 'Blocked Time'" class="radio-inline"><input id="5" type="radio" name="status" /> Arrived</label>
+        <label ng-show="appt.client != 'Blocked Time'" class="radio-inline"><input id="6" type="radio" name="status" /> In Progress</label>
+        <label ng-show="appt.client != 'Blocked Time'" class="radio-inline"><input id="7" type="radio" name="status" /> Fraud</label>
     </p>
     <br />
     <p>Notes:</p>

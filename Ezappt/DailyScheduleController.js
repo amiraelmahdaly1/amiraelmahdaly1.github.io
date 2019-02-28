@@ -29,6 +29,7 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
     var editAvTimesDialogUrl = DeploymentHost + "AvTimes.html?staffID=" + $scope.staffID + "&userID=" + $scope.userID;
     var blockTimesDialog;
     var blockTimesDialogUrl = DeploymentHost + "BlockTimes.html?staffID=" + $scope.staffID + "&userID=" + $scope.userID;
+
     var editApptDialogUrlStringified = "";
     var CalendarID;
     $scope.avTimes = [];
@@ -48,6 +49,7 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
                 Redirect("Home.html");
             });
             $("#btnAddAvTimes").click(ShowAvTimesDialog);
+            $("#btncancelAppt").click(cancelApptOpenner);
             $("#btnBlockTimes").click(ShowBlockTimesDialog);
             $("#btnSync").click(getSyncItems);
             $("#datepicker1").datepicker({
@@ -117,6 +119,7 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
         //showNotification("Please wait until ezappt calendar is created.");
         if ($scope.avTimes.length != 0) {
             $scope.key = 'avTimes';
+            $scope.ezapptEvents = [];
             checkForEzappt();
         }
 
@@ -127,6 +130,7 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
         //showNotification("Please wait until ezappt calendar is created.");
         if ($scope.avTimes.length != 0) {
             $scope.key = 'blockTimes';
+            $scope.ezapptEvents = [];
             checkForEzappt();
         }
 
@@ -136,15 +140,13 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
             $scope.newlyCreated = false;
             if ($scope.key === 'avTimes' || $scope.key === 'blockTimes') {
                 for (i = 0; i < $scope.avTimes.length; i++) {
-                    var events = getEvents(new Date($scope.avTimes[i].startDt), new Date($scope.avTimes[i].endDt), Number($scope.avTimes[i].startTime.replace(':30', '.5').replace(':00', '')), Number($scope.avTimes[i].endTime.replace(':30', '.5').replace(':00', '')), $scope.avTimes[i].days)
+                    var events = getEvents(new Date($scope.avTimes[i].startDt), new Date($scope.avTimes[i].endDt), Number($scope.avTimes[i].startTime.replace(':30', '.5').replace(':00', '')), Number($scope.avTimes[i].endTime.replace(':30', '.5').replace(':00', '')), $scope.avTimes[i].days);
                     $scope.ezapptEvents = $scope.ezapptEvents.concat(events);
 
                 }
                 var k = 0;
                 if ($scope.ezapptEvents.length != 0)
                     getAndDeleteEvents(new Date(new Date(new Date(JSON.parse($scope.ezapptEvents[k]).Start.DateTime)).setMinutes(new Date(JSON.parse($scope.ezapptEvents[k]).Start.DateTime).getMinutes() + 5)).toISOString(), new Date(new Date(new Date(JSON.parse($scope.ezapptEvents[k]).End.DateTime)).setMinutes(new Date(JSON.parse($scope.ezapptEvents[k]).End.DateTime).getMinutes() - 5)).toISOString(), k);
-
-                //CreateEvent(k);
             }
             else {
                 //appt after creating ezappt cal
@@ -194,6 +196,26 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
                 }
             }).fail(errorHandler);
 
+    }
+    function cancelApptOpenner(){
+        $.ajax({
+            url: restUrl + 'calendars',
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': 'Bearer ' + rawToken,
+                'Cache-Control': 'no-cache',
+                'Pragma': 'no-cache'
+            }
+        }).done(function (item) {
+            if (CalendarExists(item.value)) {
+                Redirect("CancelAppt.html?token=" + rawToken + "&calendarID=" + CalendarID);           
+            }
+            else {
+                //no calendar
+                showNotification("no created Ezappt calendar yet!")
+            }
+        }).fail(errorHandler);
     }
     function CreateEzapptCalendar() {
         $.ajax({
@@ -257,7 +279,7 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
                         if ($scope.key === "avTimes")
                             showNotification("outlook Available times sync completed.");
                         else
-                            showNotification("Blocking times completed.");
+                            blockEzapptTimes()
                     }
                 }
 
@@ -336,7 +358,7 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
 
         else {
             AngularServices.GET("GetClientForm", $scope.allSyncAppts[k].clientid).then(function (data) {
-                var htmlBody = '<p>Client: ' + data.GetClientFormResult.first + ' ' + data.GetClientFormResult.last + '</p><p>Address1: ' + data.GetClientFormResult.address + '</p><p>Address2: ' + data.GetClientFormResult.city + ' ' + data.GetClientFormResult.state + ' ' + data.GetClientFormResult.zip + '</p><p></p><p>Service: ' + $scope.allSyncAppts[k].service + "</p><p>Caregory: " + categories[$scope.allSyncAppts[k].category] + "</p><p>Notes: " + $scope.allSyncAppts[k].notes + "</p>";
+                var htmlBody = "<div id='ezapptApptID_" + $scope.allSyncAppts[k].appointmentid  +"'><p>Client: " + data.GetClientFormResult.first + ' ' + data.GetClientFormResult.last + '</p><p>Address1: ' + data.GetClientFormResult.address + '</p><p>Address2: ' + data.GetClientFormResult.city + ' ' + data.GetClientFormResult.state + ' ' + data.GetClientFormResult.zip + '</p><p></p><p>Service: ' + $scope.allSyncAppts[k].service + "</p><p>Caregory: " + categories[$scope.allSyncAppts[k].category] + "</p><p>Notes: " + $scope.allSyncAppts[k].notes + "</p></div>";
                 apptSynced = '{"Subject": "' + $scope.allSyncAppts[k].client + '", "Categories": ["Purple category"],"Body": {"ContentType": "HTML","Content": "' + htmlBody + '"},"Start": {"DateTime": "' + new Date($scope.allSyncAppts[k].dtStart).toISOString() + '","TimeZone": "Pacific Standard Time"},"End": {"DateTime": "' + new Date($scope.allSyncAppts[k].dtEnd).toISOString() + '","TimeZone": "Pacific Standard Time"},"Attendees": []}';
                 $.ajax({
                     //'url': restUrl + '/events',
@@ -403,28 +425,42 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
                 if (n < $scope.ezapptEvents.length) {
                     CreateEvent(n);
                 }
-                else
-                {
+                else {
                     if ($scope.key === "avTimes")
                         showNotification("outlook Available times sync completed.");
                     else
-                        showNotification("Blocking times completed.");
+                        blockEzapptTimes()
                 }
             }
             else {
                 n++;
                 if (n < $scope.ezapptEvents.length)
                     getAndDeleteEvents(new Date(new Date(new Date(JSON.parse($scope.ezapptEvents[n]).Start.DateTime)).setMinutes(new Date(JSON.parse($scope.ezapptEvents[n]).Start.DateTime).getMinutes() + 5)).toISOString(), new Date(new Date(new Date(JSON.parse($scope.ezapptEvents[n]).End.DateTime)).setMinutes(new Date(JSON.parse($scope.ezapptEvents[n]).End.DateTime).getMinutes() - 5)).toISOString(), n);
-                else
-                {
+                else {
                     if ($scope.key === "avTimes")
                         showNotification("outlook Available times sync completed.");
                     else
-                        showNotification("Blocking times completed.");
+                        blockEzapptTimes()
                 }
             }
-
+           
         }).fail(errorHandler);
+
+    }
+    function blockEzapptTimes() {
+        AngularServices.GET("GetAvailableHoursByDate", $scope.avTimes[0].startDt, $scope.staffID, $scope.avTimes[0].locID).then(function (data) {
+            $scope.dateID = data.GetAvailableHoursByDateResult.Date_ID;
+            $scope.appt = { "DateID": $scope.dateID, "appointmentid": 0, "category": 1, "client": "", "clientid": 0, "dtEnd": $scope.avTimes[0].endDt + " " + $scope.avTimes[0].endTime, "dtStart": $scope.avTimes[0].startDt + " " + $scope.avTimes[0].startTime, "isEzapptAppointment": true, "location": "", "locationid": $scope.avTimes[0].locID, "notes": "", "service": "", "serviceid": 0 };
+            AngularServices.POST("SetAppointment",
+                {
+                    "appointmentJson": $scope.appt,
+                    "staffID": $scope.staffID,
+                    "userID": $scope.userID
+
+                }).then(function (data) {
+                    showNotification("Blocking times completed.");
+                });
+        });
 
     }
     function getSyncItems() {
@@ -467,7 +503,11 @@ var myCtrl = ['$scope', 'AngularServices', function ($scope, AngularServices) {
                 isFinite(value) &&
                 Math.floor(value) === value;
         };
-        var Dates = getDates(startDate, endDate, days);
+        var Dates;
+        if (days)
+            Dates = getDates(startDate, endDate, days);
+        else
+            Dates = [startDate];
         var Events = [];
         var dt;
 
