@@ -1,7 +1,7 @@
 ﻿"use strict";
 //Office.initialize = function (reason) {
 
-//};
+//};jj
 var app = angular.module('myApp', []);
 app.config(['$httpProvider', function ($httpProvider) {
     $httpProvider.defaults.withCredentials = true;
